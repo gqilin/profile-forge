@@ -1,20 +1,18 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 
-def build_profiles_page(profiles: list[dict], bundles: list[dict]) -> dict:
-    bundle_names = {bundle["id"]: bundle["name"] for bundle in bundles}
+def build_profiles_page(tools: list[dict], active_state: dict[str, str]) -> dict:
     items = []
-    for profile in profiles:
-        bound_bundle_ids = []
-        for refs in profile["bindings"].values():
-            bound_bundle_ids.extend(refs)
-        items.append(
-            {
-                "id": profile["id"],
-                "name": profile["name"],
-                "description": profile["description"],
-                "bundles": [bundle_names[bundle_id] for bundle_id in bound_bundle_ids if bundle_id in bundle_names],
-                "activationMode": profile["activationPolicy"]["mode"],
-            }
-        )
-    return {"title": "Profiles", "items": items}
+    for tool in tools:
+        for config_set in tool["configSets"]:
+            items.append(
+                {
+                    "id": f"{tool['name']}-{config_set['id']}",
+                    "name": config_set["id"],
+                    "tool": tool["name"],
+                    "description": config_set.get("description", ""),
+                    "resources": config_set["resources"],
+                    "isActive": active_state.get(tool["name"]) == config_set["id"],
+                }
+            )
+    return {"title": "Config Sets", "items": items}

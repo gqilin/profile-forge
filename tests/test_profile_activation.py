@@ -1,90 +1,109 @@
-import json
+﻿import json
 from pathlib import Path
 
-from src.core.models.entities import Bundle, ManagedTarget, Profile, Resource
+from src.core.models.entities import Workspace, ToolConfig, ConfigSet
 from src.core.services.activation import ActivationService
 from src.core.services.repository import AppRepository, bootstrap_sample_data
 from src.core.storage.json_store import JsonStore
 from src.ui.app import build_dashboard_view
+from src.core.services.workspace_scanner import WorkspaceScanner
 
 
-def test_activate_profile_generates_plan_and_writes_state(tmp_path: Path):
-    store = JsonStore(tmp_path)
-    service = ActivationService(store)
-
-    resource = Resource(
-        id="factory-skills",
-        name="Factory Skills",
-        platform="factory",
-        type="skills",
-        source_path="resources/factory/skills",
-        managed_path="C:/Users/Admin/.factory/skills",
-    )
-    bundle = Bundle(
-        id="factory-design",
-        name="Factory Design",
-        platform="factory",
-        resource_refs=["factory-skills"],
-        tags=["design"],
-        description="design bundle",
-    )
-    profile = Profile(
-        id="design",
-        name="Design",
-        description="Design workflow",
-        bindings={"factory": ["factory-design"]},
-        env_bindings={"FIGMA_MODE": "design"},
-        command_bindings={"sync": "factory sync"},
-        mcp_bindings={"figma": {"transport": "http"}},
-    )
-    target = ManagedTarget(
-        id="factory-skills-target",
-        platform="factory",
-        target_type="skills",
-        path="C:/Users/Admin/.factory/skills",
-        scope="global",
+def test_workspace_entities_serialize_to_new_contract(tmp_path: Path):
+    workspace = Workspace(
+        root_path=str(tmp_path),
+        tools=[
+            ToolConfig(
+                name="factory",
+                config_sets=[
+                    ConfigSet(
+                        id="design",
+                        tool="factory",
+                        path=str(tmp_path / "ai-configs" / "factory" / "design"),
+                        resources=["skills", "mcp"],
+                    )
+                ],
+            )
+        ],
     )
 
-    store.write_collection("resources", [resource.to_dict()])
-    store.write_collection("bundles", [bundle.to_dict()])
-    store.write_collection("profiles", [profile.to_dict()])
-    store.write_collection("managed-targets", [target.to_dict()])
+    payload = workspace.to_dict()
 
-    result = service.activate_profile("design")
+    assert payload["rootPath"] == str(tmp_path)
+    assert payload["tools"][0]["name"] == "factory"
+    assert payload["tools"][0]["configSets"][0]["resources"] == ["skills", "mcp"]
+
+
+def test_workspace_scanner_discovers_tools_and_config_sets(tmp_path: Path):
+    base = tmp_path / "ai-configs" / "factory" / "design"
+    (base / "skills").mkdir(parents=True)
+    (base / "mcp").mkdir()
+
+    scanner = WorkspaceScanner(tmp_path)
+    snapshot = scanner.scan()
+
+    assert snapshot["rootPath"] == str(tmp_path)
+    assert snapshot["tools"][0]["name"] == "factory"
+    assert snapshot["tools"][0]["configSets"][0]["id"] == "design"
+    assert snapshot["tools"][0]["resourceGroups"][0]["type"] == "mcp"
+    assert snapshot["tools"][0]["resourceGroups"][1]["items"][0]["configSetId"] == "design"
+
+
+def test_activate_config_set_generates_backup_and_active_state(tmp_path: Path):
+    source = tmp_path / "ai-configs" / "factory" / "design"
+    (source / "skills").mkdir(parents=True)
+    (source / "skills" / "skill.md").write_text("demo", encoding="utf-8")
+    target = tmp_path / "targets" / "factory" / "skills"
+
+    service = ActivationService(JsonStore(tmp_path))
+    service.configure_tool_targets({"factory": {"skills": str(target)}})
+
+    result = service.activate_config_set(str(tmp_path), "factory", "design")
 
     assert result["status"] == "success"
-    assert result["plan"]["profileId"] == "design"
-    assert [step["type"] for step in result["plan"]["steps"]] == [
-        "verify_target",
-        "copy_files",
-        "register_mcp",
-        "apply_commands",
-        "write_env",
-        "write_active_state",
-    ]
-
-    active_state = json.loads((tmp_path / "active-profile.json").read_text(encoding="utf-8"))
-    assert active_state["currentProfileId"] == "design"
-    assert active_state["status"] == "active"
+    assert result["activeState"]["factory"] == "design"
+    assert result["plan"]["steps"][0]["type"] == "backup_target"
+    assert (target / "skill.md").exists()
 
 
-def test_dashboard_view_matches_profile_first_design():
-    view = build_dashboard_view()
+def test_dashboard_view_matches_workspace_first_design(tmp_path: Path):
+    workspace = {
+        "rootPath": str(tmp_path),
+        "tools": [
+            {
+                "name": "factory",
+                "configSets": [
+                    {
+                        "id": "design",
+                        "tool": "factory",
+                        "path": str(tmp_path / "ai-configs" / "factory" / "design"),
+                        "resources": ["skills", "mcp"],
+                    }
+                ],
+                "resourceGroups": [
+                    {"type": "mcp", "items": [{"configSetId": "design", "path": "x", "isActive": True}]},
+                    {"type": "skills", "items": [{"configSetId": "design", "path": "y", "isActive": True}]},
+                ],
+            }
+        ],
+    }
+    view = build_dashboard_view(workspace, {"factory": "design"}, [])
 
     assert view["theme"] == "system"
-    assert view["hero"]["activeProfile"] == "Design"
-    assert view["panels"][0]["title"] == "Activation Preview"
-    assert "Factory" in view["panels"][1]["items"]
+    assert view["hero"]["activeWorkspace"] == str(tmp_path)
+    assert view["panels"][0]["title"] == "Tool Activation"
+    assert "factory: design" in view["panels"][1]["items"]
 
 
 def test_repository_bootstraps_full_workspace_data(tmp_path: Path):
     store = JsonStore(tmp_path)
-    bootstrap_sample_data(store)
+    bootstrap_sample_data(store, workspace_root=tmp_path)
     repository = AppRepository(store)
 
-    snapshot = repository.get_workspace_snapshot()
+    snapshot = repository.get_workspace_snapshot(tmp_path)
 
-    assert snapshot["dashboard"]["hero"]["activeProfile"] == "Design"
-    assert snapshot["profiles"][0]["id"] == "design"
-    assert snapshot["resources"][0]["platform"] == "factory"
-    assert snapshot["backups"][0]["status"] == "available"
+    assert snapshot["workspace"]["rootPath"] == str(tmp_path)
+    assert snapshot["tools"][0]["name"] == "codex"
+    assert snapshot["activeState"]["factory"] == "design"
+    assert snapshot["currentTool"]["resourceGroups"]
+    assert snapshot["currentTool"]["actions"]["createStructureLabel"] == "创建配置文件夹结构"

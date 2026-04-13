@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 
 def build_backups_page(backups: list[dict]) -> dict:
@@ -7,7 +7,8 @@ def build_backups_page(backups: list[dict]) -> dict:
         "items": [
             {
                 "id": backup["id"],
-                "profileId": backup["profileId"],
+                "tool": backup["tool"],
+                "configSet": backup["configSet"],
                 "status": backup["status"],
                 "createdAt": backup["createdAt"],
             }
