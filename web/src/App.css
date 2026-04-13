@@ -1,0 +1,139 @@
+.app-shell {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  min-height: 100vh;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 32px 24px;
+  border-right: 1px solid var(--border);
+  background: var(--panel-strong);
+}
+
+.sidebar nav {
+  display: grid;
+  gap: 10px;
+}
+
+.sidebar nav a {
+  color: var(--text-h);
+  text-decoration: none;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--panel-soft);
+}
+
+.sidebar__subtitle {
+  max-width: 24ch;
+}
+
+.content {
+  padding: 32px;
+  display: grid;
+  gap: 24px;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.hero-card,
+.panel-card,
+.data-card,
+.metric-card {
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--panel-soft);
+  box-shadow: var(--shadow);
+}
+
+.hero-card {
+  padding: 28px;
+}
+
+.hero-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: start;
+}
+
+.status-pill {
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: var(--accent-bg);
+  color: var(--text-h);
+  white-space: nowrap;
+}
+
+.metric-grid,
+.panel-grid,
+.list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.metric-card,
+.panel-card,
+.data-card {
+  padding: 20px;
+}
+
+.metric-card__label {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--text-muted);
+}
+
+.metric-card__value {
+  font-size: 36px;
+  line-height: 1;
+  color: var(--text-h);
+}
+
+.metric-card--warning .metric-card__value {
+  color: var(--accent-strong);
+}
+
+.panel-card ul {
+  margin: 16px 0 0;
+  padding-left: 18px;
+}
+
+.data-section {
+  display: grid;
+  gap: 16px;
+}
+
+.section-heading {
+  display: grid;
+  gap: 6px;
+}
+
+@media (max-width: 960px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    gap: 24px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hero-card__header {
+    flex-direction: column;
+  }
+
+  .content {
+    padding: 20px;
+  }
+}
