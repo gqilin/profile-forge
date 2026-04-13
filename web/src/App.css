@@ -22,14 +22,15 @@
   min-height: 100vh;
 }
 
-.app-shell--stacked {
-  display: block;
+.app-shell--command-center {
+  min-height: 100vh;
+  padding: 20px 0 72px;
 }
 
 .content {
-  padding: 32px;
+  padding: 20px;
   display: grid;
-  gap: 24px;
+  gap: 14px;
 }
 
 .content--wide {
@@ -46,9 +47,9 @@
 .loading-state,
 .empty-state {
   border: 1px dashed var(--border);
-  border-radius: 24px;
+  border-radius: 18px;
   background: var(--panel-soft);
-  padding: 32px;
+  padding: 24px;
   display: grid;
   place-items: center;
   gap: 12px;
@@ -65,18 +66,29 @@
 }
 
 .status-message {
-  margin-top: 12px;
+  margin-top: 8px;
+  font-size: 13px;
   color: var(--accent-strong);
 }
 
+.linear-icon {
+  width: 18px;
+  height: 18px;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
 .eyebrow {
-  font-size: 12px;
-  letter-spacing: 0.18em;
+  font-size: 10px;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
 
-.hero-card,
+.command-hero,
 .panel-card,
 .data-card,
 .metric-card,
@@ -85,12 +97,13 @@
 .group-detail,
 .settings-modal {
   border: 1px solid var(--border);
-  border-radius: 24px;
-  background: var(--panel-soft);
+  border-radius: 18px;
+  background: color-mix(in oklab, var(--panel-soft) 88%, white 12%);
+  backdrop-filter: blur(8px);
   box-shadow: var(--shadow);
 }
 
-.hero-card,
+.command-hero,
 .tool-tabs-card,
 .group-sidebar,
 .group-detail,
@@ -98,9 +111,11 @@
 .panel-card,
 .data-card,
 .settings-modal {
-  padding: 24px;
+  padding: 18px;
 }
 
+.command-hero,
+.command-status,
 .hero-card__header,
 .card-header-row,
 .tool-manager-item,
@@ -111,17 +126,47 @@
   align-items: start;
 }
 
-.hero-meta {
-  margin-top: 18px;
+.command-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.9fr);
+  gap: 16px;
+}
+
+.command-hero__intro,
+.command-status {
+  display: grid;
+  gap: 10px;
+}
+
+.command-status__badge,
+.group-nav__label,
+.panel-card__header,
+.metric-card__top {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.command-status__badge {
+  width: fit-content;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--accent-bg) 82%, transparent);
+  color: var(--text-h);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.command-status__meta {
   display: flex;
-  gap: 18px;
+  gap: 10px 14px;
   flex-wrap: wrap;
   color: var(--text-muted);
+  font-size: 13px;
 }
 
 .status-pill,
 .active-badge {
-  padding: 10px 14px;
+  padding: 7px 10px;
   border-radius: 999px;
   background: var(--accent-bg);
   color: var(--text-h);
@@ -129,8 +174,8 @@
 }
 
 .active-badge {
-  padding: 6px 10px;
-  font-size: 12px;
+  padding: 4px 8px;
+  font-size: 11px;
 }
 
 .metric-grid,
@@ -138,19 +183,41 @@
 .list-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 16px;
+  gap: 12px;
+}
+
+.metric-card__top {
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.metric-card__indicator,
+.panel-card__icon {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent-secondary));
+  box-shadow: 0 0 0 3px rgba(207, 93, 134, 0.08);
+}
+
+.metric-card__tone {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--text-muted);
 }
 
 .metric-card__label {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   color: var(--text-muted);
+  font-size: 13px;
 }
 
 .metric-card__value {
-  font-size: 36px;
+  font-size: 28px;
   line-height: 1;
   color: var(--text-h);
+  font-weight: 600;
 }
 
 .metric-card--warning .metric-card__value {
@@ -158,20 +225,26 @@
 }
 
 .panel-card ul {
-  margin: 16px 0 0;
+  margin: 12px 0 0;
   padding-left: 18px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.panel-card__header {
+  margin-bottom: 8px;
 }
 
 .section-heading {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .tool-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 18px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .tool-tab,
@@ -183,12 +256,26 @@
   border: 1px solid var(--border);
   background: var(--panel-strong);
   color: var(--text-h);
-  border-radius: 16px;
+  border-radius: 12px;
   cursor: pointer;
+  transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
 }
 
 .tool-tab {
-  padding: 12px 18px;
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  background: transparent;
+}
+
+.tool-tabs--command {
+  width: fit-content;
+  padding: 4px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .tool-tab--active,
@@ -196,7 +283,8 @@
 .interactive-card--active,
 .theme-chip--active {
   border-color: var(--accent-strong);
-  background: var(--accent-bg);
+  background: linear-gradient(135deg, rgba(255, 76, 124, 0.22), rgba(159, 89, 255, 0.16));
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.16);
 }
 
 .workspace-layout {
@@ -206,6 +294,11 @@
   align-items: start;
 }
 
+.workspace-layout--command {
+  grid-template-columns: 320px 1fr;
+  gap: 14px;
+}
+
 .group-sidebar {
   display: grid;
   gap: 16px;
@@ -213,10 +306,21 @@
   top: 24px;
 }
 
+.tool-tab:hover,
+.group-nav__item:hover,
+.primary-action:hover,
+.secondary-action:hover,
+.theme-chip:hover,
+.interactive-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
 .primary-action,
 .secondary-action,
 .theme-chip {
-  padding: 12px 14px;
+  padding: 8px 12px;
+  font-size: 13px;
 }
 
 .group-nav {
@@ -228,19 +332,25 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px 14px;
+  padding: 10px 12px;
+  font-size: 13px;
 }
 
 .group-detail,
 .settings-section,
 .tool-manager-list {
   display: grid;
-  gap: 16px;
+  gap: 12px;
 }
 
 .interactive-card {
   display: grid;
-  gap: 12px;
+  gap: 10px;
+}
+
+.list-grid--command {
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
 }
 
 .data-section {
@@ -252,12 +362,14 @@
   position: fixed;
   right: 24px;
   bottom: 24px;
-  width: 64px;
-  height: 64px;
+  width: 52px;
+  height: 52px;
   border-radius: 999px;
-  background: var(--accent-strong);
+  background: linear-gradient(135deg, var(--accent-strong), var(--accent-secondary));
   color: white;
   z-index: 50;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.22);
+  font-size: 12px;
 }
 
 .settings-modal-backdrop {
@@ -267,29 +379,30 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 24px;
+  padding: 20px;
   z-index: 60;
 }
 
 .settings-modal {
   width: min(760px, 100%);
   display: grid;
-  gap: 20px;
+  gap: 16px;
 }
 
 .settings-modal input {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--panel-strong);
   color: var(--text-h);
+  font-size: 13px;
 }
 
 .theme-options,
 .tool-manager-create {
   display: flex;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
@@ -299,18 +412,25 @@
 
 @media (max-width: 960px) {
   .content {
-    padding: 20px;
+    padding: 16px;
   }
 
   .hero-card__header,
+  .command-hero,
   .card-header-row,
   .tool-manager-item,
   .folder-picker-row {
     flex-direction: column;
   }
 
-  .workspace-layout {
+  .workspace-layout,
+  .workspace-layout--command {
     grid-template-columns: 1fr;
+  }
+
+  .tool-tabs--command {
+    overflow-x: auto;
+    padding-bottom: 8px;
   }
 
   .group-sidebar {

@@ -8,6 +8,19 @@ import './App.css'
 
 const defaultWorkspace = 'H:/陕西师范/UItest1'
 
+function LinearIcon({ path }: { path: string }) {
+  return (
+    <svg viewBox="0 0 24 24" className="linear-icon" aria-hidden="true">
+      <path d={path} />
+    </svg>
+  )
+}
+
+const toolIconPath = 'M4 7h16M7 12h10M10 17h4'
+const statusIconPath = 'M12 3v18M3 12h18'
+const groupIconPath = 'M5 6.5h14v11H5z'
+const backupIconPath = 'M7 7h10v10H7z M9 9h6v6H9z'
+
 function EmptyState({ title, description, actionLabel, onAction }: { title: string; description: string; actionLabel?: string; onAction?: () => void }) {
   return (
     <div className="empty-state">
@@ -108,7 +121,7 @@ function App() {
   const showNoDataScreen = !snapshot || !dashboard || !settings
 
   return (
-    <div className="app-shell app-shell--stacked">
+    <div className="app-shell app-shell--command-center">
       <main className="content content--wide">
         {showNoDataScreen ? (
           <section className="empty-screen">
@@ -121,31 +134,34 @@ function App() {
           </section>
         ) : (
           <>
-            <section className="hero-card" id="总览">
-              <p className="eyebrow">当前工作区</p>
-              <div className="hero-card__header">
-                <div>
-                  <h1>{dashboard.shell.title}</h1>
-                  <h2>{workspacePath}</h2>
-                  <p>{dashboard.hero.summary}</p>
-                </div>
-                <span className="status-pill">{dashboard.hero.status}</span>
+            <section className="command-hero" id="总览">
+              <div className="command-hero__intro">
+                <p className="eyebrow">Command Center</p>
+                <h1>{dashboard.shell.title}</h1>
+                <h2>{workspacePath}</h2>
+                <p>{dashboard.hero.summary}</p>
               </div>
-              <div className="hero-meta">
-                <span>工具数量：{tools.length}</span>
-                <span>已激活工具：{Object.keys(activeState).length}</span>
-                <span>{dashboard.shell.subtitle}</span>
+              <div className="command-status">
+                <div className="command-status__badge">
+                  <LinearIcon path={statusIconPath} />
+                  <span>{dashboard.hero.status}</span>
+                </div>
+                <div className="command-status__meta">
+                  <span>工具数量 {tools.length}</span>
+                  <span>已激活 {Object.keys(activeState).length}</span>
+                  <span>{dashboard.shell.subtitle}</span>
+                </div>
               </div>
               {statusMessage ? <p className="status-message">{statusMessage}</p> : null}
             </section>
 
-            <section className="tool-tabs-card" id="工具">
+            <section className="tool-tabs-card command-strip" id="工具">
               <div className="section-heading">
-                <p className="eyebrow">开发工具</p>
-                <h2>顶部 Tab 切换</h2>
+                <p className="eyebrow">工具切换</p>
+                <h2>悬浮指挥条</h2>
               </div>
               {tools.length ? (
-                <div className="tool-tabs">
+                <div className="tool-tabs tool-tabs--command">
                   {tools.map((tool) => (
                     <button
                       key={tool.name}
@@ -156,7 +172,8 @@ function App() {
                         setSelectedGroup(tool.resourceGroups[0]?.type ?? '')
                       }}
                     >
-                      {tool.name}
+                      <LinearIcon path={toolIconPath} />
+                      <span>{tool.name}</span>
                     </button>
                   ))}
                 </div>
@@ -178,10 +195,10 @@ function App() {
             </section>
 
             {currentTool ? (
-              <section className="workspace-layout" id="资源组">
+              <section className="workspace-layout workspace-layout--command" id="资源组">
                 <aside className="group-sidebar">
                   <div className="section-heading">
-                    <p className="eyebrow">资源组</p>
+                    <p className="eyebrow">资源组矩阵</p>
                     <h2>{currentTool.name}</h2>
                   </div>
                   <button
@@ -200,7 +217,10 @@ function App() {
                           className={`group-nav__item ${group.type === currentGroup?.type ? 'group-nav__item--active' : ''}`}
                           onClick={() => setSelectedGroup(group.type)}
                         >
-                          <span>{group.type}</span>
+                          <span className="group-nav__label">
+                            <LinearIcon path={groupIconPath} />
+                            {group.type}
+                          </span>
                           <strong>{group.items.length}</strong>
                         </button>
                       ))}
@@ -212,15 +232,18 @@ function App() {
 
                 <div className="group-detail">
                   <div className="section-heading">
-                    <p className="eyebrow">当前资源组</p>
+                    <p className="eyebrow">当前状态</p>
                     <h2>{currentGroup?.type ?? '暂无资源组'}</h2>
                   </div>
                   {visibleConfigSets.length ? (
-                    <div className="list-grid">
+                    <div className="list-grid list-grid--command">
                       {visibleConfigSets.map((item) => (
                         <article className={`data-card interactive-card ${item.isActive ? 'interactive-card--active' : ''}`} key={`${currentGroup?.type}-${item.configSetId}`}>
                           <div className="card-header-row">
-                            <h3>{item.configSetId}</h3>
+                            <div>
+                              <p className="eyebrow">Config Set</p>
+                              <h3>{item.configSetId}</h3>
+                            </div>
                             {item.isActive ? <span className="active-badge">当前使用</span> : null}
                           </div>
                           <p>{item.description || '当前开发工具下该资源组的配置项。'}</p>
@@ -251,6 +274,12 @@ function App() {
               <div className="list-grid">
                 {backups.map((backup) => (
                   <article className="data-card" key={backup.id}>
+                    <div className="card-header-row">
+                      <span className="group-nav__label">
+                        <LinearIcon path={backupIconPath} />
+                        <span>{backup.tool} / {backup.configSet}</span>
+                      </span>
+                    </div>
                     <h3>{backup.tool} / {backup.configSet}</h3>
                     <p>ID：{backup.id}</p>
                     <p>状态：{backup.status}</p>
