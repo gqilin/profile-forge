@@ -20,18 +20,11 @@ export const workspaceData: WorkspaceSnapshot = {
         {
           type: 'rules',
           items: [
-            {
-              configSetId: 'default',
-              path: 'H:/workspace/demo/ai-configs/codex/default/rules',
-              isActive: true,
-            },
+            { configSetId: 'default', path: 'H:/workspace/demo/ai-configs/codex/default/rules', isActive: true },
           ],
         },
       ],
-      actions: {
-        createStructureLabel: '创建配置文件夹结构',
-        activateLabel: '切换到当前组',
-      },
+      actions: { createStructureLabel: '创建配置文件夹结构', activateLabel: '切换到当前组' },
     },
     {
       name: 'cursor',
@@ -47,18 +40,11 @@ export const workspaceData: WorkspaceSnapshot = {
         {
           type: 'commands',
           items: [
-            {
-              configSetId: 'frontend',
-              path: 'H:/workspace/demo/ai-configs/cursor/frontend/commands',
-              isActive: false,
-            },
+            { configSetId: 'frontend', path: 'H:/workspace/demo/ai-configs/cursor/frontend/commands', isActive: false },
           ],
         },
       ],
-      actions: {
-        createStructureLabel: '创建配置文件夹结构',
-        activateLabel: '切换到当前组',
-      },
+      actions: { createStructureLabel: '创建配置文件夹结构', activateLabel: '切换到当前组' },
     },
     {
       name: 'factory',
@@ -74,56 +60,33 @@ export const workspaceData: WorkspaceSnapshot = {
         {
           type: 'mcp',
           items: [
-            {
-              configSetId: 'design',
-              path: 'H:/workspace/demo/ai-configs/factory/design/mcp',
-              isActive: true,
-            },
+            { configSetId: 'design', path: 'H:/workspace/demo/ai-configs/factory/design/mcp', isActive: true },
           ],
         },
         {
           type: 'skills',
           items: [
-            {
-              configSetId: 'design',
-              path: 'H:/workspace/demo/ai-configs/factory/design/skills',
-              isActive: true,
-            },
+            { configSetId: 'design', path: 'H:/workspace/demo/ai-configs/factory/design/skills', isActive: true },
           ],
         },
       ],
-      actions: {
-        createStructureLabel: '创建配置文件夹结构',
-        activateLabel: '切换到当前组',
-      },
+      actions: { createStructureLabel: '创建配置文件夹结构', activateLabel: '切换到当前组' },
     },
   ],
   currentTool: {
     name: 'codex',
     configSets: [
-      {
-        id: 'default',
-        tool: 'codex',
-        path: 'H:/workspace/demo/ai-configs/codex/default',
-        resources: ['rules'],
-      },
+      { id: 'default', tool: 'codex', path: 'H:/workspace/demo/ai-configs/codex/default', resources: ['rules'] },
     ],
     resourceGroups: [
       {
         type: 'rules',
         items: [
-          {
-            configSetId: 'default',
-            path: 'H:/workspace/demo/ai-configs/codex/default/rules',
-            isActive: true,
-          },
+          { configSetId: 'default', path: 'H:/workspace/demo/ai-configs/codex/default/rules', isActive: true },
         ],
       },
     ],
-    actions: {
-      createStructureLabel: '创建配置文件夹结构',
-      activateLabel: '切换到当前组',
-    },
+    actions: { createStructureLabel: '创建配置文件夹结构', activateLabel: '切换到当前组' },
   },
   activeState: {
     codex: 'default',
@@ -138,6 +101,17 @@ export const workspaceData: WorkspaceSnapshot = {
       createdAt: '2026-04-13T16:30:00+00:00',
     },
   ],
+  settings: {
+    floatingButtonLabel: '设置',
+    title: '应用设置',
+    workspaceLabel: '工作目录',
+    workspacePath: 'H:/workspace/demo',
+    themeLabel: '主题颜色',
+    theme: 'violet',
+    themeOptions: ['violet', 'emerald', 'amber', 'rose'],
+    toolManagerTitle: '管理开发工具',
+    toolManagerDescription: '添加、删除、编辑顶部开发工具 tab，并同步更新工作目录结构。',
+  },
   dashboard: {
     theme: 'system',
     shell: {
@@ -156,58 +130,15 @@ export const workspaceData: WorkspaceSnapshot = {
       { label: '备份数', value: '1', tone: 'neutral' },
     ],
     panels: [
-      {
-        title: '激活流程',
-        items: ['切换开发工具', '创建目录结构', '选择资源组', '执行真实激活'],
-      },
-      {
-        title: '当前激活',
-        items: ['codex: default', 'factory: design'],
-      },
-      {
-        title: '支持工具',
-        items: ['codex', 'cursor', 'factory'],
-      },
+      { title: '激活流程', items: ['切换开发工具', '创建目录结构', '选择资源组', '执行真实激活'] },
+      { title: '当前激活', items: ['codex: default', 'factory: design'] },
+      { title: '支持工具', items: ['codex', 'cursor', 'factory'] },
     ],
   },
   pages: {
-    profiles: {
-      title: '配置集',
-      items: [
-        {
-          id: 'codex-default',
-          name: 'default',
-          tool: 'codex',
-          description: '',
-          resources: ['rules'],
-          isActive: true,
-        },
-      ],
-    },
-    resources: {
-      title: '资源覆盖',
-      items: [
-        {
-          id: 'codex-default',
-          tool: 'codex',
-          configSet: 'default',
-          path: 'H:/workspace/demo/ai-configs/codex/default',
-          resources: ['rules'],
-        },
-      ],
-    },
-    backups: {
-      title: '备份',
-      items: [
-        {
-          id: 'factory-design-snapshot-001',
-          tool: 'factory',
-          configSet: 'design',
-          status: 'available',
-          createdAt: '2026-04-13T16:30:00+00:00',
-        },
-      ],
-    },
+    profiles: { title: '配置集', items: [{ id: 'codex-default', name: 'default', tool: 'codex', description: '', resources: ['rules'], isActive: true }] },
+    resources: { title: '资源覆盖', items: [{ id: 'codex-default', tool: 'codex', configSet: 'default', path: 'H:/workspace/demo/ai-configs/codex/default', resources: ['rules'] }] },
+    backups: { title: '备份', items: [{ id: 'factory-design-snapshot-001', tool: 'factory', configSet: 'design', status: 'available', createdAt: '2026-04-13T16:30:00+00:00' }] },
   },
 }
 

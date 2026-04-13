@@ -61,6 +61,18 @@ export type ToolConfig = {
   }
 }
 
+export type SettingsData = {
+  floatingButtonLabel: string
+  title: string
+  workspaceLabel: string
+  workspacePath: string
+  themeLabel: string
+  theme: string
+  themeOptions: string[]
+  toolManagerTitle: string
+  toolManagerDescription: string
+}
+
 export type WorkspaceSnapshot = {
   workspace: {
     rootPath: string
@@ -70,6 +82,7 @@ export type WorkspaceSnapshot = {
   currentTool: ToolConfig
   activeState: Record<string, string>
   backups: BackupItem[]
+  settings: SettingsData
   dashboard: {
     theme: string
     shell: {

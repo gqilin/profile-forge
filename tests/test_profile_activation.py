@@ -49,6 +49,27 @@ def test_workspace_scanner_discovers_tools_and_config_sets(tmp_path: Path):
     assert snapshot["tools"][0]["resourceGroups"][1]["items"][0]["configSetId"] == "design"
 
 
+def test_workspace_scanner_manage_tool_directories(tmp_path: Path):
+    scanner = WorkspaceScanner(tmp_path)
+    scanner.create_tool_structure("factory")
+    scanner.rename_tool("factory", "factory-pro")
+    scanner.create_tool_structure("cursor")
+    scanner.delete_tool("cursor")
+
+    assert (tmp_path / "ai-configs" / "factory-pro").exists()
+    assert not (tmp_path / "ai-configs" / "cursor").exists()
+
+
+def test_workspace_scanner_create_standard_group_structure(tmp_path: Path):
+    scanner = WorkspaceScanner(tmp_path)
+    created = scanner.create_config_set_structure("codex", "default")
+
+    assert (created / "skills").exists()
+    assert (created / "mcp").exists()
+    assert (created / "rules").exists()
+    assert (created / "commands").exists()
+
+
 def test_activate_config_set_generates_backup_and_active_state(tmp_path: Path):
     source = tmp_path / "ai-configs" / "factory" / "design"
     (source / "skills").mkdir(parents=True)
@@ -95,6 +116,15 @@ def test_dashboard_view_matches_workspace_first_design(tmp_path: Path):
     assert "factory: design" in view["panels"][1]["items"]
 
 
+def test_repository_returns_empty_state_without_bootstrap(tmp_path: Path):
+    repository = AppRepository(JsonStore(tmp_path))
+    snapshot = repository.get_workspace_snapshot(tmp_path)
+
+    assert snapshot["tools"] == []
+    assert snapshot["currentTool"]["name"] == ""
+    assert snapshot["settings"]["workspacePath"] == str(tmp_path)
+
+
 def test_repository_bootstraps_full_workspace_data(tmp_path: Path):
     store = JsonStore(tmp_path)
     bootstrap_sample_data(store, workspace_root=tmp_path)
@@ -107,3 +137,5 @@ def test_repository_bootstraps_full_workspace_data(tmp_path: Path):
     assert snapshot["activeState"]["factory"] == "design"
     assert snapshot["currentTool"]["resourceGroups"]
     assert snapshot["currentTool"]["actions"]["createStructureLabel"] == "创建配置文件夹结构"
+    assert snapshot["settings"]["floatingButtonLabel"] == "设置"
+    assert snapshot["settings"]["themeOptions"]

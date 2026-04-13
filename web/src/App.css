@@ -1,4 +1,24 @@
-﻿.app-shell {
+﻿:root[data-theme-accent='violet'] {
+  --accent-bg: rgba(139, 92, 246, 0.18);
+  --accent-strong: #8b5cf6;
+}
+
+:root[data-theme-accent='emerald'] {
+  --accent-bg: rgba(16, 185, 129, 0.18);
+  --accent-strong: #10b981;
+}
+
+:root[data-theme-accent='amber'] {
+  --accent-bg: rgba(245, 158, 11, 0.18);
+  --accent-strong: #f59e0b;
+}
+
+:root[data-theme-accent='rose'] {
+  --accent-bg: rgba(244, 63, 94, 0.18);
+  --accent-strong: #f43f5e;
+}
+
+.app-shell {
   min-height: 100vh;
 }
 
@@ -17,6 +37,38 @@
   margin: 0 auto;
 }
 
+.empty-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.loading-state,
+.empty-state {
+  border: 1px dashed var(--border);
+  border-radius: 24px;
+  background: var(--panel-soft);
+  padding: 32px;
+  display: grid;
+  place-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.empty-state__svg {
+  width: 160px;
+  height: 120px;
+  stroke: var(--accent-strong);
+  fill: none;
+  stroke-width: 4;
+  opacity: 0.75;
+}
+
+.status-message {
+  margin-top: 12px;
+  color: var(--accent-strong);
+}
+
 .eyebrow {
   font-size: 12px;
   letter-spacing: 0.18em;
@@ -30,7 +82,8 @@
 .metric-card,
 .tool-tabs-card,
 .group-sidebar,
-.group-detail {
+.group-detail,
+.settings-modal {
   border: 1px solid var(--border);
   border-radius: 24px;
   background: var(--panel-soft);
@@ -43,12 +96,15 @@
 .group-detail,
 .metric-card,
 .panel-card,
-.data-card {
+.data-card,
+.settings-modal {
   padding: 24px;
 }
 
 .hero-card__header,
-.card-header-row {
+.card-header-row,
+.tool-manager-item,
+.folder-picker-row {
   display: flex;
   justify-content: space-between;
   gap: 24px;
@@ -121,7 +177,9 @@
 .tool-tab,
 .group-nav__item,
 .primary-action,
-.secondary-action {
+.secondary-action,
+.theme-chip,
+.settings-fab {
   border: 1px solid var(--border);
   background: var(--panel-strong);
   color: var(--text-h);
@@ -135,7 +193,8 @@
 
 .tool-tab--active,
 .group-nav__item--active,
-.interactive-card--active {
+.interactive-card--active,
+.theme-chip--active {
   border-color: var(--accent-strong);
   background: var(--accent-bg);
 }
@@ -155,7 +214,8 @@
 }
 
 .primary-action,
-.secondary-action {
+.secondary-action,
+.theme-chip {
   padding: 12px 14px;
 }
 
@@ -171,7 +231,9 @@
   padding: 12px 14px;
 }
 
-.group-detail {
+.group-detail,
+.settings-section,
+.tool-manager-list {
   display: grid;
   gap: 16px;
 }
@@ -186,13 +248,64 @@
   gap: 16px;
 }
 
+.settings-fab {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 64px;
+  height: 64px;
+  border-radius: 999px;
+  background: var(--accent-strong);
+  color: white;
+  z-index: 50;
+}
+
+.settings-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.48);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  z-index: 60;
+}
+
+.settings-modal {
+  width: min(760px, 100%);
+  display: grid;
+  gap: 20px;
+}
+
+.settings-modal input {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--panel-strong);
+  color: var(--text-h);
+}
+
+.theme-options,
+.tool-manager-create {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.tool-manager-item {
+  align-items: center;
+}
+
 @media (max-width: 960px) {
   .content {
     padding: 20px;
   }
 
   .hero-card__header,
-  .card-header-row {
+  .card-header-row,
+  .tool-manager-item,
+  .folder-picker-row {
     flex-direction: column;
   }
 
@@ -202,5 +315,10 @@
 
   .group-sidebar {
     position: static;
+  }
+
+  .settings-fab {
+    right: 16px;
+    bottom: 16px;
   }
 }

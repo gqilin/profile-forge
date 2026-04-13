@@ -1,8 +1,9 @@
 ﻿from __future__ import annotations
 
+import shutil
 from pathlib import Path
 
-from src.core.models.entities import ConfigSet, ToolConfig, Workspace
+from src.core.models.entities import ConfigSet, ToolConfig
 
 
 class WorkspaceScanner:
@@ -38,6 +39,32 @@ class WorkspaceScanner:
                 tools.append(tool_payload)
 
         return {"rootPath": str(self.root_path), "tools": tools}
+
+    def create_tool_structure(self, tool_name: str) -> Path:
+        tool_dir = self.root_path / "ai-configs" / tool_name
+        tool_dir.mkdir(parents=True, exist_ok=True)
+        return tool_dir
+
+    def create_config_set_structure(self, tool_name: str, config_set_id: str) -> Path:
+        config_set_dir = self.create_tool_structure(tool_name) / config_set_id
+        config_set_dir.mkdir(parents=True, exist_ok=True)
+        for resource_dir in self.RESOURCE_DIRS:
+            (config_set_dir / resource_dir).mkdir(parents=True, exist_ok=True)
+        return config_set_dir
+
+    def rename_tool(self, old_name: str, new_name: str) -> Path:
+        old_dir = self.root_path / "ai-configs" / old_name
+        new_dir = self.root_path / "ai-configs" / new_name
+        if old_dir.exists():
+            old_dir.rename(new_dir)
+        else:
+            new_dir.mkdir(parents=True, exist_ok=True)
+        return new_dir
+
+    def delete_tool(self, tool_name: str) -> None:
+        tool_dir = self.root_path / "ai-configs" / tool_name
+        if tool_dir.exists():
+            shutil.rmtree(tool_dir)
 
     def _build_resource_groups(self, tool_payload: dict) -> list[dict]:
         groups: list[dict] = []

@@ -31,3 +31,4 @@ def test_export_workspace_snapshot_script_writes_json(tmp_path: Path):
     assert payload["tools"][0]["name"] == "codex"
     assert payload["activeState"]["factory"] == "design"
     assert payload["currentTool"]["actions"]["createStructureLabel"] == "创建配置文件夹结构"
+    assert payload["settings"]["toolManagerTitle"] == "管理开发工具"

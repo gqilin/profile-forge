@@ -38,6 +38,13 @@ def bootstrap_sample_data(store: JsonStore, workspace_root: Path | None = None) 
             ).to_dict()
         ],
     )
+    store.write_document(
+        "settings",
+        {
+            "workspacePath": str(root),
+            "theme": "violet",
+        },
+    )
 
 
 class AppRepository:
@@ -50,6 +57,7 @@ class AppRepository:
         active_state_doc = self.store.read_document("active-state") or {"workspace": str(root), "active": {}}
         active_state = active_state_doc.get("active", {})
         backups = self.store.read_collection("backups")
+        stored_settings = self.store.read_document("settings") or {"workspacePath": str(root), "theme": "violet"}
 
         tools = [self._apply_active_flags(tool, active_state) for tool in workspace_payload["tools"]]
         current_tool = tools[0] if tools else {"name": "", "configSets": [], "resourceGroups": [], "actions": {"createStructureLabel": "创建配置文件夹结构"}}
@@ -58,12 +66,25 @@ class AppRepository:
             "activateLabel": "切换到当前组",
         }
 
+        settings = {
+            "floatingButtonLabel": "设置",
+            "title": "应用设置",
+            "workspaceLabel": "工作目录",
+            "workspacePath": stored_settings["workspacePath"],
+            "themeLabel": "主题颜色",
+            "theme": stored_settings["theme"],
+            "themeOptions": ["violet", "emerald", "amber", "rose"],
+            "toolManagerTitle": "管理开发工具",
+            "toolManagerDescription": "添加、删除、编辑顶部开发工具 tab，并同步更新工作目录结构。",
+        }
+
         return {
             "workspace": {"rootPath": workspace_payload["rootPath"], "tools": tools},
             "tools": tools,
             "currentTool": current_tool,
             "activeState": active_state,
             "backups": backups,
+            "settings": settings,
             "dashboard": build_dashboard_view({"rootPath": workspace_payload["rootPath"], "tools": tools}, active_state, backups),
             "pages": {
                 "profiles": build_profiles_page(tools, active_state),
