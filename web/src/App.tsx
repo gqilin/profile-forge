@@ -4,7 +4,7 @@ import { open } from '@tauri-apps/plugin-dialog'
 import type { ToolConfig, WorkspaceSnapshot } from './types/workspace'
 import './App.css'
 
-const defaultWorkspace = 'H:/陕西师范/UItest1'
+const defaultWorkspace = 'H:/其他/abcde'
 
 function LinearIcon({ path }: { path: string }) {
   return (
@@ -14,16 +14,39 @@ function LinearIcon({ path }: { path: string }) {
   )
 }
 
+function ThemeModeIcon({ theme }: { theme: 'white' | 'black' }) {
+  return (
+    theme === 'white' ? (
+      <span className="theme-mode-icon theme-mode-icon--sun" aria-hidden="true">
+        <svg viewBox="0 0 24 24" className="theme-mode-icon__sun">
+          <circle cx="12" cy="12" r="4" fill="currentColor" />
+          <path d="M12 2.5v2.5M12 19v2.5M21.5 12H19M5 12H2.5M18.72 5.28l-1.77 1.77M7.05 16.95l-1.77 1.77M18.72 18.72l-1.77-1.77M7.05 7.05L5.28 5.28" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
+        </svg>
+      </span>
+    ) : (
+      <span className="theme-mode-icon theme-mode-icon--moon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" className="theme-mode-icon__moon">
+          <path d="M15.2 2.8a8.9 8.9 0 1 0 6 15.2 9.7 9.7 0 0 1-12.4-12.4 8.86 8.86 0 0 0 6.4-2.8Z" fill="currentColor" />
+        </svg>
+      </span>
+    )
+  )
+}
+
 const toolIconPath = 'M4 7h16M7 12h10M10 17h4'
 const groupIconPath = 'M5 6.5h14v11H5z'
 
 function EmptyState({ title, description, actionLabel, onAction }: { title: string; description: string; actionLabel?: string; onAction?: () => void }) {
   return (
     <div className="empty-state">
-      <svg viewBox="0 0 160 120" className="empty-state__svg" aria-hidden="true">
-        <rect x="20" y="24" width="120" height="72" rx="16" />
-        <path d="M44 48h72M44 64h46" />
-        <circle cx="112" cy="64" r="10" />
+      <svg viewBox="0 0 1024 1024" className="empty-state__svg" aria-hidden="true">
+        <path d="M826.4064 727.2064h-2.4064L704 435.2v-1.6H211.2V435.2L91.2 727.2064h-3.2V972.8h739.2V733.5936l-0.8064-6.4z" fill="currentColor" />
+        <path d="M814.4 736v213.6064L704 640V468.8L814.4 736z" fill="currentColor" fillOpacity="0.3" />
+        <path d="M223.2064 648.8064h468.7872L803.2 960H109.5936l113.6128-311.2064z" fill="currentColor" fillOpacity="0.16" />
+        <path d="M691.2 446.4v189.6064H224V446.3872H691.2z m-480 22.4V640L100.8 943.2064V736.7808L211.2 468.8128z" fill="currentColor" fillOpacity="0.24" />
+        <path d="M88 972.8V727.1936h291.2l0.8064 6.4c3.2 42.4064 41.6 74.4064 83.9936 71.2064a77.9008 77.9008 0 0 0 71.2064-71.2064l0.7936-6.4h292.0064V972.8H87.9872z" fill="currentColor" />
+        <path d="M100.8 960h713.6V739.9936H547.2v0.8064c-7.2064 49.6-53.6064 83.2-103.2064 76.0064-39.1936-5.6064-69.5936-36.8128-75.9936-76.0064v-0.8064H100.8V960z" fill="currentColor" fillOpacity="0.22" />
+        <path d="M766.4 236.8l108.0064 46.4L935.9872 51.2l-169.6 185.6zM936 51.2L643.2 190.4 736 236.8 936 51.2z m-169.6 200.8064v76.8l46.4-46.4-46.4-30.4z m-424 416a7.168 7.168 0 0 1-7.2064-7.2064c0-2.4064 1.6-5.6064 4.0064-6.4 8.8064-4.8 18.4064-9.6 27.2-14.4 3.2-1.6 8-0.8064 9.6 3.2 1.6 3.2 0.8064 8-3.2 9.6-8.8064 4.8-18.4064 9.6-27.2 14.4-1.6 0.8064-2.4064 0.8064-3.2 0.8064z m53.6064-29.6064a7.168 7.168 0 0 1-7.2064-7.2064c0-2.3936 1.6-4.7872 3.2-6.4 8.8064-5.5936 17.6-11.1872 25.6-16a6.1056 6.1056 0 0 1 4.0064-1.5872 7.168 7.168 0 0 1 7.1936 7.1936v1.6c0 1.6-1.6 3.2-3.2 4.8l-26.4064 16.8064c-0.7936 0.7936-1.6 0.7936-3.2 0.7936zM448 603.9936a7.2576 7.2576 0 0 1-5.6064-2.3936 7.2832 7.2832 0 0 1 0.8064-9.6c8-6.4 16-12.8 23.2064-19.2 1.5872-0.8064 3.2-1.6 4.7872-1.6 2.4064 0 4.0064 0.8064 5.6064 2.4064 1.6 1.5872 1.6 3.2 1.6 4.7872 0 1.6128-0.8064 4.0064-2.4064 4.8128-7.9872 7.1936-16 13.5936-23.9872 19.9936-1.6128 0-3.2 0.8064-4.0064 0.8064z m45.6064-41.6c-1.6128 0-3.2-0.7936-4.8128-1.5872a6.5792 6.5792 0 0 1-0.7936-9.6 173.7728 173.7728 0 0 0 19.2-23.2064c2.4064-3.2 7.2064-4.0064 9.6-1.6 3.2 2.4064 4.0064 6.4 1.6 9.6-5.6064 8-12.8 16-20.0064 24-0.7936 1.6-3.2 2.4064-4.7872 2.4064z m35.2-51.2c-0.8064 0-2.4064 0-3.2-0.7936-3.2-1.6-4.8128-5.6064-3.2-9.6l1.5872-3.2h-0.7936c-3.2 0.8064-7.2064 0.8064-11.2 0.8064a7.168 7.168 0 0 1-7.2064-7.2064c0-1.6 0.8064-4.0064 1.6128-4.8 1.5872-1.6 3.2-2.4064 4.7872-2.4064 6.4 0 12.0064-0.7936 18.4064-2.3936 1.6-3.2 2.4064-5.6064 3.2-8.8064 0.8064-3.2 4.0064-4.7872 6.4-4.7872h1.6c4.0064 0.7936 6.4 4.7872 5.6064 8.7936l-0.8064 3.2c0.8064 0 0.8064 0.8064 1.6 0.8064 3.2 2.3936 3.2 7.1936 0 10.3936-0.8064 0.8064-2.4064 1.6-3.2 2.4064l-3.2 0.7936c-2.4064 4.8-4.0064 8.8064-6.4 12.8 0 1.6-2.4064 4.0064-5.6064 4.0064z m-48-15.1936h-1.6128c-10.3936-3.2-20.7872-8-29.5936-14.4-3.2-2.4064-4.0064-6.4-1.6-9.6 1.6-1.6 3.2-3.2 5.6064-3.2 1.5872 0 2.3936 0 3.9936 0.8064 8 5.5936 16.8064 9.6 25.6 11.9936 1.6 0.8064 3.2 1.6 4.0064 3.2 0.7936 1.6 0.7936 3.2 0.7936 5.6064a10.176 10.176 0 0 1-7.2064 5.5936z m91.1872-14.4a7.168 7.168 0 0 1-7.1936-7.2064c0-2.3936 1.6-4.7872 4.0064-6.4 8.7936-4.7872 17.5872-9.6 25.6-16 0.7936-0.7936 2.3936-0.7936 3.9936-0.7936 2.4064 0 4.8 0.8064 5.6064 3.2 2.3936 3.2 1.5872 7.2064-1.6128 9.6-8.7936 6.4-17.5872 12.0064-27.1872 16.8064-0.8064 0-2.4064 0.7936-3.2 0.7936zM428.8 461.5936a7.2576 7.2576 0 0 1-5.6064-2.3936c-7.9872-8-13.5936-18.4064-17.5872-28.8-0.8064-4.0064 0.7936-8 4.8-8.8064h3.9936c2.4064 0.8064 4.8 2.4064 4.8 4.8128 3.2 8.7936 8 16.7936 15.2064 23.9872 2.3936 3.2 2.3936 7.2064-0.8064 10.4064-0.8064 0-3.2 0.8064-4.8 0.8064z m114.4064-9.6c-4.0064 0-6.4-2.3936-7.2064-6.4-0.8064-8.7936-3.2-18.3936-8.8064-25.6-2.3936-3.2-1.5872-7.9872 1.6128-9.6 3.2-2.3936 7.9872-1.5872 9.6 1.6128 6.4 9.6 10.3936 20.7872 11.1872 32.7936 0.8064 4.0064-2.3936 7.2064-6.4 7.2064z m78.3872-5.5936a7.168 7.168 0 0 1-7.1936-7.2064c0-1.5872 0.8064-3.2 2.4064-4.7872 7.1936-6.4 15.1936-13.6064 21.5936-20.8128 1.6-1.5872 3.2-2.3936 4.8-2.3936a7.168 7.168 0 0 1 7.2064 7.2064 8.64 8.64 0 0 1-2.4064 5.5936c-7.2064 7.2064-15.2064 14.4-22.4 21.6064-0.8064 0-2.4064 0.7936-4.0064 0.7936z m-201.6-40h-2.3936a7.2064 7.2064 0 0 1-4.8-4.8c-0.8064-2.4064 0-4.8 2.4064-6.4 8.7936-8 19.9936-12.8 32-14.4H448a7.168 7.168 0 0 1 7.2064 7.2064c0 0.7936 0 1.6-0.8064 2.3936-0.8064 2.4064-3.2 4.0064-5.6064 4.8-8.7936 1.6-17.5872 4.8-23.9872 10.4064-0.8064 0-3.2 0.7936-4.8128 0.7936z m89.6-3.2c-1.5872 0-2.3936 0-3.2-0.8064-8.7936-3.9936-17.5872-7.1936-27.1872-8.7936-2.4064 0-4.8128-2.4064-5.6064-4.8-1.6-4.0064 0-8 4.0064-9.6 0.7936 0 1.5872-0.8064 2.3936-0.8064h0.8064c11.1872 1.6 21.5936 4.8 31.1936 10.4064 3.2 1.6 4.8 5.6064 3.2 9.6-0.8064 1.6-1.6 2.4064-2.4064 3.2-0.7936 0.8064-2.3936 0.8064-3.2 1.6z m155.2128-1.6c-1.6128 0-3.2-0.8064-4.8128-1.6-3.2-2.4064-3.2-6.4-0.7936-9.6l19.2-24a7.2576 7.2576 0 0 1 5.6064-2.4064A7.168 7.168 0 0 1 691.2 371.2c0 1.6 0 3.2-1.6 4.0064-6.4 8-12.8 16.7936-19.2 24-0.8064 1.6-3.2 2.3936-5.6064 2.3936z m37.5936-49.6c-2.4064 0-4.8-1.6-6.4-4.0064a7.7824 7.7824 0 0 1 0.8064-7.1936c5.5936-8 11.1872-16.8064 16-25.6 1.5872-2.4064 3.2-3.2 6.4-3.2 1.5872 0 2.3936 0 3.9936 0.8064 3.2 2.3936 4.8 6.4 2.4064 9.6l-16.8064 26.3936c-1.6 1.6-4.0064 3.2-6.4 3.2z m31.2064-52.8c-0.8064 0-2.4064 0-3.2-0.8064-3.2-1.6-4.8128-6.4-3.2-9.6 3.2-5.5936 6.4-11.2 8.7936-16.7936 1.6-2.4064 3.2-3.2 6.4-3.2a7.168 7.168 0 0 1 7.2064 7.2064c0 0.7936 0 1.6-0.8064 3.2-3.2 5.5936-6.4 11.2-8.8064 16.7936-0.7936 1.6-3.2 3.2-6.4 3.2z" fill="currentColor" />
       </svg>
       <h3>{title}</h3>
       <p>{description}</p>
@@ -69,13 +92,17 @@ function App() {
   }
 
   useEffect(() => {
-    document.documentElement.dataset.themeAccent = snapshot?.settings.theme ?? 'violet'
+    const theme = snapshot?.settings.theme ?? 'violet'
+    document.documentElement.dataset.themeAccent = theme
+    document.documentElement.style.colorScheme = theme === 'white' ? 'light' : 'dark'
   }, [snapshot?.settings.theme])
 
   const tools = useMemo(() => snapshot?.tools ?? [], [snapshot])
   const settings = snapshot?.settings
   const dashboard = snapshot?.dashboard
   const activeState = snapshot?.activeState ?? {}
+  const themeOptions = useMemo(() => (settings?.themeOptions ?? ['violet', 'emerald', 'amber', 'rose', 'white', 'black']).filter((option) => option !== 'white' && option !== 'black'), [settings?.themeOptions])
+  const isContrastTheme = settings?.theme === 'white' || settings?.theme === 'black'
 
   const currentTool = useMemo<ToolConfig | undefined>(() => {
     return tools.find((tool) => tool.name === selectedTool) ?? tools[0]
@@ -305,11 +332,20 @@ function App() {
             <div className="settings-section">
               <label className="field-label">{settings?.themeLabel ?? '主题颜色'}</label>
               <div className="theme-options">
-                {(settings?.themeOptions ?? ['violet', 'emerald', 'amber', 'rose']).map((option) => (
+                <button
+                  type="button"
+                  className={`theme-chip theme-chip--mode ${isContrastTheme ? 'theme-chip--active' : ''}`}
+                  onClick={() => mutate('update_theme', { workspace_root: workspacePath, theme: settings?.theme === 'white' ? 'black' : 'white' })}
+                >
+                  <ThemeModeIcon theme={settings?.theme === 'white' ? 'white' : 'black'} />
+                  <span>{settings?.theme === 'white' ? 'white' : 'black'}</span>
+                </button>
+                {themeOptions.map((option) => (
                   <button
                     key={option}
                     type="button"
                     className={`theme-chip ${settings?.theme === option ? 'theme-chip--active' : ''}`}
+                    data-theme-option={option}
                     onClick={() => mutate('update_theme', { workspace_root: workspacePath, theme: option })}
                   >
                     <span className="theme-chip__swatch" aria-hidden="true" />

@@ -34,6 +34,18 @@ html {
   scroll-behavior: smooth;
 }
 
+html[data-theme-accent='white'] {
+  color-scheme: light;
+}
+
+html[data-theme-accent='black'],
+html[data-theme-accent='violet'],
+html[data-theme-accent='emerald'],
+html[data-theme-accent='amber'],
+html[data-theme-accent='rose'] {
+  color-scheme: dark;
+}
+
 body {
   margin: 0;
   min-width: 320px;

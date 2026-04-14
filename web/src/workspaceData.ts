@@ -108,7 +108,7 @@ export const workspaceData: WorkspaceSnapshot = {
     workspacePath: 'H:/workspace/demo',
     themeLabel: '主题颜色',
     theme: 'violet',
-    themeOptions: ['violet', 'emerald', 'amber', 'rose'],
+    themeOptions: ['violet', 'emerald', 'amber', 'rose', 'white', 'black'],
     toolManagerTitle: '管理开发工具',
     toolManagerDescription: '添加、删除、编辑顶部开发工具 tab，并同步更新工作目录结构。',
   },

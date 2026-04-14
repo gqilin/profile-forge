@@ -73,7 +73,7 @@ class AppRepository:
             "workspacePath": stored_settings["workspacePath"],
             "themeLabel": "主题颜色",
             "theme": stored_settings["theme"],
-            "themeOptions": ["violet", "emerald", "amber", "rose"],
+            "themeOptions": ["violet", "emerald", "amber", "rose", "white", "black"],
             "toolManagerTitle": "管理开发工具",
             "toolManagerDescription": "添加、删除、编辑顶部开发工具 tab，并同步更新工作目录结构。",
         }
