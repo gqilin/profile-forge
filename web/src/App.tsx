@@ -1,8 +1,6 @@
 ﻿import { useEffect, useMemo, useState } from 'react'
 import { invoke } from '@tauri-apps/api/core'
 import { open } from '@tauri-apps/plugin-dialog'
-import { MetricCard } from './components/MetricCard'
-import { PanelCard } from './components/PanelCard'
 import type { ToolConfig, WorkspaceSnapshot } from './types/workspace'
 import './App.css'
 
@@ -17,9 +15,7 @@ function LinearIcon({ path }: { path: string }) {
 }
 
 const toolIconPath = 'M4 7h16M7 12h10M10 17h4'
-const statusIconPath = 'M12 3v18M3 12h18'
 const groupIconPath = 'M5 6.5h14v11H5z'
-const backupIconPath = 'M7 7h10v10H7z M9 9h6v6H9z'
 
 function EmptyState({ title, description, actionLabel, onAction }: { title: string; description: string; actionLabel?: string; onAction?: () => void }) {
   return (
@@ -80,7 +76,6 @@ function App() {
   const settings = snapshot?.settings
   const dashboard = snapshot?.dashboard
   const activeState = snapshot?.activeState ?? {}
-  const backups = snapshot?.backups ?? []
 
   const currentTool = useMemo<ToolConfig | undefined>(() => {
     return tools.find((tool) => tool.name === selectedTool) ?? tools[0]
@@ -111,6 +106,8 @@ function App() {
     })
   }, [currentGroup, currentTool])
 
+  const activeConfigCount = useMemo(() => visibleConfigSets.filter((item) => item.isActive).length, [visibleConfigSets])
+
   const mutate = async (command: string, payload: Record<string, string>) => {
     const data = await invoke<WorkspaceSnapshot>(command, { payload })
     setSnapshot(data)
@@ -134,31 +131,16 @@ function App() {
           </section>
         ) : (
           <>
-            <section className="command-hero" id="总览">
-              <div className="command-hero__intro">
-                <p className="eyebrow">Command Center</p>
-                <h1>{dashboard.shell.title}</h1>
-                <h2>{workspacePath}</h2>
-                <p>{dashboard.hero.summary}</p>
-              </div>
-              <div className="command-status">
-                <div className="command-status__badge">
-                  <LinearIcon path={statusIconPath} />
+            <section className="tool-tabs-card command-strip" id="工具">
+              <div className="command-strip__header">
+                <div className="section-heading">
+                  <p className="eyebrow">工具切换</p>
+                  <h2>当前工具</h2>
+                </div>
+                <div className="command-strip__meta">
+                  <span>{workspacePath}</span>
                   <span>{dashboard.hero.status}</span>
                 </div>
-                <div className="command-status__meta">
-                  <span>工具数量 {tools.length}</span>
-                  <span>已激活 {Object.keys(activeState).length}</span>
-                  <span>{dashboard.shell.subtitle}</span>
-                </div>
-              </div>
-              {statusMessage ? <p className="status-message">{statusMessage}</p> : null}
-            </section>
-
-            <section className="tool-tabs-card command-strip" id="工具">
-              <div className="section-heading">
-                <p className="eyebrow">工具切换</p>
-                <h2>悬浮指挥条</h2>
               </div>
               {tools.length ? (
                 <div className="tool-tabs tool-tabs--command">
@@ -182,24 +164,23 @@ function App() {
               )}
             </section>
 
-            <section className="metric-grid">
-              {dashboard.metrics.map((metric) => (
-                <MetricCard key={metric.label} {...metric} />
-              ))}
-            </section>
-
-            <section className="panel-grid">
-              {dashboard.panels.map((panel) => (
-                <PanelCard key={panel.title} {...panel} />
-              ))}
-            </section>
-
             {currentTool ? (
               <section className="workspace-layout workspace-layout--command" id="资源组">
                 <aside className="group-sidebar">
                   <div className="section-heading">
                     <p className="eyebrow">资源组矩阵</p>
                     <h2>{currentTool.name}</h2>
+                    <p className="sidebar-summary">{dashboard.hero.summary}</p>
+                  </div>
+                  <div className="sidebar-stats" aria-label="当前工具概览">
+                    <div>
+                      <span>资源组</span>
+                      <strong>{currentTool.resourceGroups.length}</strong>
+                    </div>
+                    <div>
+                      <span>配置集</span>
+                      <strong>{currentTool.configSets.length}</strong>
+                    </div>
                   </div>
                   <button
                     type="button"
@@ -231,9 +212,32 @@ function App() {
                 </aside>
 
                 <div className="group-detail">
-                  <div className="section-heading">
-                    <p className="eyebrow">当前状态</p>
-                    <h2>{currentGroup?.type ?? '暂无资源组'}</h2>
+                  <header className="group-detail__header">
+                    <div className="section-heading">
+                      <p className="eyebrow">当前状态</p>
+                      <h2>{currentGroup?.type ?? '暂无资源组'}</h2>
+                    </div>
+                    <div className="group-detail__meta">
+                      <span>{dashboard.hero.status}</span>
+                      <span>工具数量 {tools.length}</span>
+                      <span>已激活 {Object.keys(activeState).length}</span>
+                      <span>当前组 {visibleConfigSets.length}</span>
+                    </div>
+                  </header>
+                  {statusMessage ? <p className="status-message">{statusMessage}</p> : null}
+                  <div className="detail-summary" aria-label="当前资源组概览">
+                    <div>
+                      <span>活跃配置</span>
+                      <strong>{activeConfigCount}</strong>
+                    </div>
+                    <div>
+                      <span>可切换配置</span>
+                      <strong>{visibleConfigSets.length}</strong>
+                    </div>
+                    <div>
+                      <span>当前工具</span>
+                      <strong>{currentTool.name}</strong>
+                    </div>
                   </div>
                   {visibleConfigSets.length ? (
                     <div className="list-grid list-grid--command">
@@ -265,29 +269,6 @@ function App() {
                 </div>
               </section>
             ) : null}
-
-            <section className="data-section" id="备份">
-              <div className="section-heading">
-                <p className="eyebrow">激活备份</p>
-                <h2>备份记录</h2>
-              </div>
-              <div className="list-grid">
-                {backups.map((backup) => (
-                  <article className="data-card" key={backup.id}>
-                    <div className="card-header-row">
-                      <span className="group-nav__label">
-                        <LinearIcon path={backupIconPath} />
-                        <span>{backup.tool} / {backup.configSet}</span>
-                      </span>
-                    </div>
-                    <h3>{backup.tool} / {backup.configSet}</h3>
-                    <p>ID：{backup.id}</p>
-                    <p>状态：{backup.status}</p>
-                    <p>{backup.createdAt}</p>
-                  </article>
-                ))}
-              </div>
-            </section>
           </>
         )}
       </main>
@@ -303,6 +284,7 @@ function App() {
               <div>
                 <p className="eyebrow">设置</p>
                 <h2>{settings?.title ?? '应用设置'}</h2>
+                <p className="settings-intro">集中管理工作目录、主题偏好与工具列表。</p>
               </div>
               <button type="button" className="secondary-action" onClick={() => setIsSettingsOpen(false)}>
                 关闭
@@ -310,17 +292,18 @@ function App() {
             </div>
 
             <div className="settings-section">
-              <label>{settings?.workspaceLabel ?? '工作目录'}</label>
+              <label className="field-label">{settings?.workspaceLabel ?? '工作目录'}</label>
               <div className="folder-picker-row">
                 <input value={workspacePath} readOnly />
                 <button type="button" className="primary-action" onClick={() => void pickWorkspaceFolder()}>
                   选择文件夹
                 </button>
               </div>
+              <p className="field-hint">当前目录会作为配置扫描与生成的默认根路径。</p>
             </div>
 
             <div className="settings-section">
-              <label>{settings?.themeLabel ?? '主题颜色'}</label>
+              <label className="field-label">{settings?.themeLabel ?? '主题颜色'}</label>
               <div className="theme-options">
                 {(settings?.themeOptions ?? ['violet', 'emerald', 'amber', 'rose']).map((option) => (
                   <button
@@ -329,10 +312,12 @@ function App() {
                     className={`theme-chip ${settings?.theme === option ? 'theme-chip--active' : ''}`}
                     onClick={() => mutate('update_theme', { workspace_root: workspacePath, theme: option })}
                   >
+                    <span className="theme-chip__swatch" aria-hidden="true" />
                     {option}
                   </button>
                 ))}
               </div>
+              <p className="field-hint">主题强调色会同步到状态提示、激活态与主要操作。</p>
             </div>
 
             <div className="settings-section">
